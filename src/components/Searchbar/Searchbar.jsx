@@ -1,23 +1,48 @@
-import {Header} from './Searchbar.styled';
+import React, {Component} from 'react';
+import {Header, SearchForm, Button, Label, Input} from './Searchbar.styled';
 
-function Searchbar () {
+export default class Searchbar extends Component {
+
+    state = {
+        searchWord: null
+    };
+
+    handleChange = event => {
+        this.setState({searchWord: event.currentTarget.value});
+    }
+
+    handleSubmit = event => {
+        event.preventDefault();
+
+        if(this.state.searchWord.trim() === '') {
+            return;
+        };
+
+        this.props.onSubmit(this.state.searchWord);
+        this.setState({searchWord: ''});
+    };
+
+    render () {
         return (
-            <Header class="searchbar">
-                <form class="form">
-                    <button type="submit" class="button">
-                        <span class="button-label">Search</span>
-                    </button>
+            <Header className="searchbar">
+                <SearchForm className="form" onSubmit={this.handleSubmit}>
+                    <Button type="submit" className="button">
+                        <Label className="button-label">Search</Label>
+                    </Button>
                 
-                    <input
-                        class="input"
+                    <Input
+                        onChange={this.handleChange}
+                        className="input"
                         type="text"
-                        autocomplete="off"
-                        autofocus
+                        autoComplete="off"
+                        autoFocus
                         placeholder="Search images and photos"
+                        value={this.searchWord}
                     />
-                </form>
+                </SearchForm>
             </Header>
       )
-}
+    };   
+};
 
-export default Searchbar;
+// export default Searchbar;
