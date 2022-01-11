@@ -5,7 +5,7 @@ import ImageGallery from './components/ImageGallery/ImageGallery';
 
 export default class App extends Component {
   state = {
-    inputWord: null
+    inputWord: null,
   };
 
   inputSearch = (inputWord) => {
@@ -13,10 +13,11 @@ export default class App extends Component {
   };
 
   render () {
+    const {inputWord} = this.state;
     return (
       <div className="App">
         <Searchbar onSubmit={this.inputSearch}></Searchbar>
-        <ImageGallery searchWord={this.state.inputWord}></ImageGallery>
+        <ImageGallery searchWord={inputWord}></ImageGallery>
       </div>
     );
   }

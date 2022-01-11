@@ -3,23 +3,37 @@ import {GalleryList, Container} from './ImageGallery.styled';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Loader from '../Loader/Loader';
 import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
 
 export default class ImageGallery extends Component {
     state = {
         results: null,
         error: null,
-        status: 'idle'
+        status: 'idle',
+        showModal: false,
+        modalImg: null,
+        page: 1
     };
 
     componentDidUpdate (prevProps) {
         const prevKeyWord = prevProps.searchWord;
         const keyWord = this.props.searchWord;
+        console.log(this.state.page);
 
         if(prevKeyWord !== keyWord) {
-            const myKey = '24296809-9b93a2a7fdd6c9a326bbfa052';
+            return this.fetchAPI(keyWord);
+        }
+
+        // if(prevProps.page !== this.state.page) {
+            
+        // }
+    };
+
+    fetchAPI = (keyWord) => {
+        const myKey = '24296809-9b93a2a7fdd6c9a326bbfa052';
             this.setState({results: null, error: null, status: 'pending'});
 
-            fetch(`https://pixabay.com/api/?q=${keyWord}&page=1&key=${myKey}&image_type=photo&orientation=horizontal&per_page=12`)
+            fetch(`https://pixabay.com/api/?q=${keyWord}&page=${this.state.page}&key=${myKey}&image_type=photo&orientation=horizontal&per_page=12`)
                 .then(response => {
                     return response.json();
                 })
@@ -30,11 +44,26 @@ export default class ImageGallery extends Component {
                    return this.setState({results: arr.hits, status: 'resolved'});
                 })
                 .catch(error => this.setState({status: 'rejected'}));
-        }
-    };
+    }
+
+    toggleModal = () => {
+        this.setState( ({showModal}) => ({
+          showModal: !showModal,
+        }));
+    }
+    
+    getModalPhoto = (url) => {
+        this.setState({modalImg: url});
+    }
+
+    loadMorePhotos = () => {
+        return this.setState(({page}) => ({
+            page: page + 1
+        }));
+    }
 
     render () {
-        const {results, error, status} = this.state;
+        const {results, error, status, modalImg} = this.state;
 
         if(status === 'idle') {
             return <h2>Введіть слово для пошуку</h2>;
@@ -45,10 +74,15 @@ export default class ImageGallery extends Component {
         }
 
         if(status === 'resolved') {
-            return <><GalleryList>
-                     {results.map(result => <ImageGalleryItem key={result.id} result={result}></ImageGalleryItem>)}
-                   </GalleryList>
-                   <Container><Button></Button></Container></>
+            return <>
+                    <GalleryList >
+                    {results.map(result => <ImageGalleryItem key={result.id} result={result} onClick={this.toggleModal} modalPhoto={this.getModalPhoto
+                    }></ImageGalleryItem>)}
+                    </GalleryList>
+                    <Container><Button onClick={this.loadMorePhotos}></Button></Container>
+                    {this.state.showModal && <Modal onClick={this.toggleModal} modalImg={modalImg}><button type='button' onClick={this.toggleModal}></button></Modal>}
+                   </>
+
         }
 
         if(status === 'rejected') {
