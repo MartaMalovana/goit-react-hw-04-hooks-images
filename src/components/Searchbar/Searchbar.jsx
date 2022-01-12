@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
-import {Header, SearchForm, Button, Label, Input} from './Searchbar.styled';
+import {FcSearch} from 'react-icons/fc';
+import { IconContext } from "react-icons";
+import {Header, SearchForm, Button, Input} from './Searchbar.styled';
+
+
 
 export default class Searchbar extends Component {
 
@@ -27,7 +31,7 @@ export default class Searchbar extends Component {
             <Header className="searchbar">
                 <SearchForm className="form" onSubmit={this.handleSubmit}>
                     <Button type="submit" className="button">
-                        <Label className="button-label">Search</Label>
+                    <IconContext.Provider value={{size: "2em"}}><FcSearch/></IconContext.Provider>
                     </Button>
                 
                     <Input
@@ -45,4 +49,3 @@ export default class Searchbar extends Component {
     };   
 };
 
-// export default Searchbar;

@@ -15,20 +15,6 @@ export default class ImageGallery extends Component {
         page: 1
     };
 
-    componentDidUpdate (prevProps) {
-        const prevKeyWord = prevProps.searchWord;
-        const keyWord = this.props.searchWord;
-        console.log(this.state.page);
-
-        if(prevKeyWord !== keyWord) {
-            return this.fetchAPI(keyWord);
-        }
-
-        // if(prevProps.page !== this.state.page) {
-            
-        // }
-    };
-
     fetchAPI = (keyWord) => {
         const myKey = '24296809-9b93a2a7fdd6c9a326bbfa052';
             this.setState({results: null, error: null, status: 'pending'});
@@ -57,16 +43,33 @@ export default class ImageGallery extends Component {
     }
 
     loadMorePhotos = () => {
-        return this.setState(({page}) => ({
+
+        this.setState(({page}) => ({
             page: page + 1
         }));
     }
+
+    componentDidUpdate (prevProps, prevState) {
+        const prevKeyWord = prevProps.searchWord;
+        const keyWord = this.props.searchWord;
+
+        if(prevKeyWord !== keyWord) {
+            this.setState({page: 1});
+            return this.fetchAPI(keyWord);
+        }
+
+        if(prevState.page === this.state.page) {
+            return;
+        } else {this.fetchAPI(keyWord);
+            window.scrollTo(0, 0);
+        }
+    };
 
     render () {
         const {results, error, status, modalImg} = this.state;
 
         if(status === 'idle') {
-            return <h2>Введіть слово для пошуку</h2>;
+            return <h2>Enter some word to search!</h2>;
         }
 
         if(status === 'pending') {
