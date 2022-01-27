@@ -1,51 +1,46 @@
-import React, {Component} from 'react';
+import { useState } from 'react';
 import {FcSearch} from 'react-icons/fc';
 import { IconContext } from "react-icons";
 import {Header, SearchForm, Button, Input} from './Searchbar.styled';
 
 
 
-export default class Searchbar extends Component {
+export default function Searchbar ({onSubmit}) {
+    const [searchWord, setSearchWord] = useState('');
 
-    state = {
-        searchWord: null
-    };
-
-    handleChange = event => {
-        this.setState({searchWord: event.currentTarget.value});
+    const handleChange = event => {
+        setSearchWord(event.currentTarget.value);
     }
 
-    handleSubmit = event => {
+    const handleSubmit = event => {
         event.preventDefault();
 
-        if(this.state.searchWord.trim() === '') {
+        if(searchWord.trim() === '') {
             return;
         };
 
-        this.props.onSubmit(this.state.searchWord);
-        this.setState({searchWord: ''});
+        onSubmit(searchWord);
+        setSearchWord('');
     };
 
-    render () {
-        return (
-            <Header className="searchbar">
-                <SearchForm className="form" onSubmit={this.handleSubmit}>
-                    <Button type="submit" className="button">
-                    <IconContext.Provider value={{size: "2em"}}><FcSearch/></IconContext.Provider>
-                    </Button>
-                
-                    <Input
-                        onChange={this.handleChange}
-                        className="input"
-                        type="text"
-                        autoComplete="off"
-                        autoFocus
-                        placeholder="Search images and photos"
-                        value={this.searchWord}
-                    />
-                </SearchForm>
-            </Header>
-      )
-    };   
+    return (
+        <Header className="searchbar">
+            <SearchForm className="form" onSubmit={handleSubmit}>
+                <Button type="submit" className="button">
+                <IconContext.Provider value={{size: "2em"}}><FcSearch/></IconContext.Provider>
+                </Button>
+            
+                <Input
+                    onChange={handleChange}
+                    className="input"
+                    type="text"
+                    autoComplete="off"
+                    autoFocus
+                    placeholder="Search images and photos"
+                    value={searchWord}
+                />
+            </SearchForm>
+        </Header>
+    );  
 };
 

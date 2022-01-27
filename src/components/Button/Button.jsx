@@ -1,16 +1,11 @@
-import { Component } from 'react';
 import {LoadingButton} from './Button.styled';
 
-export default class Button extends Component {
-    state = {
+export default function Button ({onClick}) {
 
-    };
-
-    handleClick = () => {
-        this.props.onClick();
+    const handleClick = () => {
+         return onClick();
     }
 
-    render () {
-        return <LoadingButton type='button' onClick={this.handleClick}>Load more</LoadingButton>;
-    }
+   return <LoadingButton type='button' onClick={handleClick}>Load more</LoadingButton>;
+    
 }

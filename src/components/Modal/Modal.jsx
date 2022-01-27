@@ -1,26 +1,20 @@
-import { Component } from "react";
 import { createPortal } from "react-dom";
 import {Overlay, ModalImage, Button} from './Modal.styled';
 
 const modalRoot = document.querySelector('#root-modal');
 
-export default class Modal extends Component {
-    state = {
+export default function Modal ({onClick, modalImg}) {
 
-    };
-
-    handleClick = () => {
-        this.props.onClick();
+    const handleClick = () => {
+        onClick();
     }
 
-    render () {
-        return createPortal(
-            <Overlay className="overlay" onClick={this.handleClick}>
-                <ModalImage className="modal">
-                    <img src={this.props.modalImg} alt="" />
-                </ModalImage>
-                <Button type="button">CLOSE</Button>
-            </Overlay>, modalRoot
-        );
-    };
+    return createPortal(
+        <Overlay className="overlay" onClick={handleClick}>
+            <ModalImage className="modal">
+                <img src={modalImg} alt="" />
+            </ModalImage>
+            <Button type="button">CLOSE</Button>
+        </Overlay>, modalRoot
+    );
 }

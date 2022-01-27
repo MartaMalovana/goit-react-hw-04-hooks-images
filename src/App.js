@@ -1,26 +1,21 @@
-import React, {Component} from 'react';
+import React, { useState } from 'react';
 import "./App.css";
 import Searchbar from './components/Searchbar/Searchbar';
 import ImageGallery from './components/ImageGallery/ImageGallery';
 
-export default class App extends Component {
-  state = {
-    inputWord: null,
+export default function App () {
+  
+  const [inputWord, setInputWord] = useState(null);
+  
+  const inputSearch = (inputWord) => {
+    setInputWord(inputWord);
   };
-
-  inputSearch = (inputWord) => {
-    this.setState({inputWord: inputWord});
-  };
-
-  render () {
-    const {inputWord} = this.state;
-    return (
-      <div className="App">
-        <Searchbar onSubmit={this.inputSearch}></Searchbar>
-        <ImageGallery searchWord={inputWord}></ImageGallery>
-      </div>
-    );
-  }
+  
+  return (
+    <div className="App">
+      <Searchbar onSubmit={inputSearch}></Searchbar>
+      <ImageGallery searchWord={inputWord}></ImageGallery>
+    </div>
+  );
 }
 
-// export default App;

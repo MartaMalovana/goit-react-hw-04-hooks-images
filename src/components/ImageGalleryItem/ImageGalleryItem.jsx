@@ -1,21 +1,17 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Result, Photo} from './ImageGalleryItem.styled';
 
-export default class ImageGalleryItem extends Component {
+export default function ImageGalleryItem ({result, modalPhoto, onClick}) {
 
-    handleClick = (event) => {
-        const modalImage = this.props.result.largeImageURL;
-        this.props.modalPhoto(modalImage);
-        this.props.onClick();
+    const handleClick = () => {
+        const modalImage = result.largeImageURL;
+        modalPhoto(modalImage);
+        onClick();
     }
-
-    render () {
-        const {webformatURL, tags} = this.props.result;
         
-        return (
-            <Result className="gallery-item" onClick={this.handleClick}>
-                <Photo src={webformatURL} alt={tags} />
-            </Result>
-        );
-    }
+    return (
+        <Result className="gallery-item" onClick={handleClick}>
+            <Photo src={result.webformatURL} alt={result.tags} />
+        </Result>
+    );
 }
