@@ -1,80 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {GalleryList, Container} from './ImageGallery.styled';
+// import React, {useEffect, useState, useCallback} from 'react';
+import {GalleryList} from './ImageGallery.styled';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
-import Loader from '../Loader/Loader';
-import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
 
-export default function ImageGallery ({searchWord}) {
-    const [results, setResults] = useState([]);
-    const [error, setError] = useState(null);
-    const [status, setStatus] = useState('idle');
-    const [showModal, setShowModal] = useState(false);
-    const [modalImg, setModalImg] = useState(null);
-    const [page, setPage] = useState(1);
-
-    const fetchAPI = (searchPage, startResult) => {
-        const myKey = '24296809-9b93a2a7fdd6c9a326bbfa052';
-        setStatus('pending');
-
-        fetch(`https://pixabay.com/api/?q=${searchWord}&page=${searchPage}&key=${myKey}&image_type=photo&orientation=horizontal&per_page=12`)
-            .then(response => {
-                return response.json();
-            })
-            .then(arr => {
-                setResults([...startResult, ...arr.hits]);
-                setStatus('resolved');
-                if(arr.hits.length === 0) {
-                    setError(`По слову ${searchWord} зображень не знайдено`);
-                    setStatus('rejected');
-                };
-            })
-            .catch(error => setStatus('rejected'));
-    }
-
-    useEffect(() => {
-        if(searchWord === null) {
-            return;
-        };
-        setPage(1);
-        fetchAPI(1, []);
-        window.scrollTo(0, 0);
-    }, [searchWord]);
-
-    const toggleModal = () => {
-        setShowModal(!showModal);
-    }
+export default function ImageGallery ({toggleModal, getModalPhoto, results}) {
+    return <>
+            <GalleryList >
+                {results.map(result => <ImageGalleryItem key={result.id} result={result} onClick={toggleModal} modalPhoto={getModalPhoto}></ImageGalleryItem>)}
+            </GalleryList>
+            </>
     
-    const getModalPhoto = (url) => {
-        setModalImg(url);
-    }
 
-    const loadMorePhotos = () => {
-        setPage(page + 1);
-        fetchAPI(page + 1, results);
-    }
-
-    if(status === 'idle') {
-        return <h2>Enter some word to search!</h2>;
-    }
-
-    if(status === 'pending') {
-        return <Loader></Loader>;
-    }
-
-    if(status === 'resolved') {
-        return <>
-                <GalleryList >
-                    {results.map(result => <ImageGalleryItem key={result.id} result={result} onClick={toggleModal} modalPhoto={getModalPhoto}></ImageGalleryItem>)}
-                </GalleryList>
-                <Container><Button onClick={loadMorePhotos}></Button></Container>
-                {showModal && <Modal onClick={toggleModal} modalImg={modalImg}><button type='button' onClick={toggleModal}></button></Modal>}
-                </>
-    }
-
-    if(status === 'rejected') {
-        return <h2>{error}</h2>;
-    }
 };
 
 // Варіант з useReducer (не вдається очистити results перед fetch з новим пошуковим словом, результат ліпить в існуючий масив)
